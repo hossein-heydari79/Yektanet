@@ -1,11 +1,20 @@
-label {
+label,
+td,
+th {
     font-size: 13px;
+    border: 1px solid lightgray;
+    padding: 5px;
 }
 
 input {
     margin-top: 5px;
     height: 25px;
     width: 200px;
+}
+
+table {
+    width: 90%;
+    border-collapse: collapse;
 }
 
 .App {
@@ -25,9 +34,17 @@ input {
     border-bottom: 1px solid black;
 }
 
-.inputs {
+.filter-item {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     margin: 5px 10px;
+}
+
+.main {
+    padding: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
