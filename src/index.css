@@ -4,7 +4,16 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: "iransans";
+    src: url("./assets/fonts/FontsFree-Net-ir_sans.ttf")format("truetype");
+}
+
 html,
-body {
+body,
+#root {
     width: 100%;
+    display: flex;
+    justify-content: center;
+    font-family: "iransans";
 }
