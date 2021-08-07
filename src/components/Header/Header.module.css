@@ -28,3 +28,15 @@ label {
     border: 1px solid lightgray;
     padding: 5px;
 }
+
+@media screen and (max-width:1000px) {
+    label {
+        font-size: 1.4vw;
+    }
+}
+
+@media screen and (max-width:600px) {
+    label {
+        font-size: 1.8vw;
+    }
+}
