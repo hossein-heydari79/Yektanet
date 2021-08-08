@@ -4,7 +4,8 @@ const initialValue = {
     field: "",
     ads: "",
     date: "",
-    nameChanger: ""
+    nameChanger: "",
+    sort: "newest"
 }
 
 function inputsValueReducer(inputsValue = initialValue, action) {

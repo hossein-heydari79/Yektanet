@@ -5,10 +5,19 @@ import firstData from '../../assets/data/data.json'
 import { setData } from '../../redux/Data/data.action.js'
 import { ToastContainer, toast } from 'react-toastify';
 import { FaStar } from "react-icons/fa";
+import { FaAngleUp } from "react-icons/fa";
+import { FaAngleDown } from "react-icons/fa";
+import { addInputsValue } from '../../redux/InputsValue/inputsValue.action'
+
+
+
+
+
 
 export const Table = () => {
 
     const dispatch = useDispatch()
+    const [count, setCount] = useState(1)
     const data = useSelector(state => state.dataReducer)
     const inputsValue = useSelector(state => state.inputsValueReducer)
     const prev = useRef()
@@ -17,6 +26,14 @@ export const Table = () => {
     const [page, setPage] = useState([0, 9])
 
 
+    useEffect(() => {
+        if (count % 2 == 0) {
+            dispatch(addInputsValue({ ...inputsValue, sort: "newest" }))
+        }
+        else {
+            dispatch(addInputsValue({ ...inputsValue, sort: "oldest" }))
+        }
+    }, [count])
 
     useEffect(() => {
         if (page[0] <= 0) {
@@ -38,15 +55,32 @@ export const Table = () => {
 
     useEffect(() => {
 
-        let newData = firstData.filter((item, index) => {
-            if (item.name.startsWith(inputsValue.nameChanger) && item.date.startsWith(inputsValue.date) && item.title.startsWith(inputsValue.ads) && item.field.startsWith(inputsValue.field)) {
-                return item
-            }
-        })
+        if (inputsValue.sort == "newest") {
+            let newData = firstData.filter((item, index) => {
+                if (item.name.startsWith(inputsValue.nameChanger) && item.date.startsWith(inputsValue.date) && item.title.startsWith(inputsValue.ads) && item.field.startsWith(inputsValue.field)) {
+                    return item
+                }
+            })
 
-        dispatch(setData(newData))
+            newData.sort((a, b) => { return (+a.date.split("-").join("")) - (+b.date.split("-").join("")) })
+            dispatch(setData(newData))
+        }
+
+        else {
+            let newData = firstData.filter((item, index) => {
+                if (item.name.startsWith(inputsValue.nameChanger) && item.date.startsWith(inputsValue.date) && item.title.startsWith(inputsValue.ads) && item.field.startsWith(inputsValue.field)) {
+                    return item
+                }
+            })
+            newData.sort((a, b) => { return (+b.date.split("-").join("")) - (+a.date.split("-").join("")) })
+
+            dispatch(setData(newData))
+        }
+
+
 
     }, [inputsValue])
+
 
 
 
@@ -64,8 +98,6 @@ export const Table = () => {
             })
         })
     }, [])
-
-
 
 
 
@@ -101,7 +133,10 @@ export const Table = () => {
                         <th>مقدار قدیمی</th>
                         <th>فیلد</th>
                         <th>نام آگهی</th>
-                        <th>تاریخ</th>
+                        <th onClick={() => setCount(count + 1)}>
+                            تاریخ
+                            {inputsValue.sort == "newest" ? <FaAngleDown /> : < FaAngleUp />}
+                        </th>
                         <th>نام تغییر دهنده</th>
                     </tr>
                 </thead>
