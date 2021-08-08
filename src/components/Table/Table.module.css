@@ -56,6 +56,16 @@ table {
     margin: 30px;
 }
 
+.name {
+    position: relative;
+}
+
+.star {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 @media screen and (max-width:1000px) {
     td,
     th {

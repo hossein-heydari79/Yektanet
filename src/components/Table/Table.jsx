@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import styles from './Table.module.css'
 import firstData from '../../assets/data/data.json'
 import { setData } from '../../redux/Data/data.action.js'
+import { ToastContainer, toast } from 'react-toastify';
+import { FaStar } from "react-icons/fa";
 
 export const Table = () => {
 
@@ -21,6 +23,21 @@ export const Table = () => {
             if (item.name.startsWith(inputsValue.nameChanger) && item.date.startsWith(inputsValue.date) && item.title.startsWith(inputsValue.ads) && item.field.startsWith(inputsValue.field)) {
                 return item
             }
+        })
+
+        let storage = Object.entries(localStorage);
+
+        storage.forEach((item) => {
+            data.forEach((user) => {
+                if (JSON.stringify(user) == item[1]) {
+                    let newData = [...data];
+                    let newUser = user;
+                    newUser.star = true;
+                    newData.splice(JSON.parse(item[0]), 1, newUser);
+
+                    dispatch(setData(newData))
+                }
+            })
         })
 
         dispatch(setData(newData))
@@ -42,17 +59,38 @@ export const Table = () => {
         else {
             next.current.disabled = false
         }
+
+
     }, [page, data])
 
 
 
-    function addLocalStorage(user) {
+    function addLocalStorage(user, index) {
         localStorage.setItem(user.id, JSON.stringify(user));
+        toast.success('User Added to local storage!', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+
+        let newData = [...data];
+        let newUser = user;
+        newUser.star = true;
+
+        newData.splice(index, 1, newUser);
+
+        dispatch(setData(newData))
+
     }
 
     return (
         <div className={styles.table_section}>
             <table>
+
                 <thead>
                     <tr>
                         <th>مقدار جدید</th>
@@ -64,18 +102,22 @@ export const Table = () => {
                     </tr>
                 </thead>
 
+                <ToastContainer style={{ fontSize: "15px" }} />
                 <tbody>
                     {
                         data.map((item, index) => {
                             if (index <= page[1] && index >= page[0]) {
                                 return (
-                                    <tr key={item.id} onClick={() => addLocalStorage(item)}>
-                                        <td>{item.new_value}</td>
+                                    <tr key={item.id} onClick={(e) => addLocalStorage(item, index)}>
+                                        <td >{item.new_value}</td>
                                         <td>{item.old_value}</td>
                                         <td>{item.field}</td>
                                         <td>{item.title}</td>
                                         <td className={styles.date}>{item.date.toString()}</td>
-                                        <td>{item.name}</td>
+                                        <td className={styles.name}>
+                                            {item.star && <FaStar className={styles.star} />}
+                                            {item.name}
+                                        </td>
                                     </tr>
                                 )
                             }
@@ -92,6 +134,6 @@ export const Table = () => {
                 <button className={styles.btn} ref={next} onClick={() => setPage([(page[1] + 1), (page[1] + 10)])}>next</button>
             </div>
 
-        </div>
+        </div >
     )
 }
