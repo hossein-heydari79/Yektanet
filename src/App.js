@@ -7,14 +7,10 @@ import { Loading } from './components/Loading/Loading'
 
 function App() {
 
-  const state = useSelector(state => state.inputsValueReducer)
 
   return (
 
     <div className={styles.App}>
-      {
-        console.log(state)
-      }
 
       <Suspense fallback={<Loading />}>
         <Switch>
