@@ -1,7 +1,13 @@
 import { InputsValue_type } from "./inputsValue.type"
 
+const initialValue = {
+    field: "",
+    ads: "",
+    date: "",
+    nameChanger: ""
+}
 
-function inputsValueReducer(inputsValue = {}, action) {
+function inputsValueReducer(inputsValue = initialValue, action) {
     switch (action.type) {
         case InputsValue_type.ADD_INPUTS_VALUE: {
             return action.payload
