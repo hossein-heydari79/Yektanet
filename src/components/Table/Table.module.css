@@ -28,7 +28,7 @@ table {
 }
 
 .date {
-    width: 100px;
+    min-width: 100px;
 }
 
 @media screen and (max-width:1000px) {
@@ -42,5 +42,8 @@ table {
     td,
     th {
         font-size: 1.8vw;
+    }
+    .date {
+        min-width: 80px;
     }
 }

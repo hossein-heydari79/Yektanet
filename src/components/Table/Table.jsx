@@ -1,8 +1,11 @@
 import React from 'react'
-import data from '../../assets/data/data.json'
+import { useSelector } from 'react-redux'
 import styles from './Table.module.css'
 
 export const Table = () => {
+
+    const data = useSelector(state => state.dataReducer)
+
     return (
         <div className={styles.table_section}>
             <table>
