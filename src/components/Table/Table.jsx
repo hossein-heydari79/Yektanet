@@ -45,6 +45,11 @@ export const Table = () => {
     }, [page, data])
 
 
+
+    function addLocalStorage(user) {
+        localStorage.setItem(user.id, JSON.stringify(user));
+    }
+
     return (
         <div className={styles.table_section}>
             <table>
@@ -64,7 +69,7 @@ export const Table = () => {
                         data.map((item, index) => {
                             if (index <= page[1] && index >= page[0]) {
                                 return (
-                                    <tr key={item.id}>
+                                    <tr key={item.id} onClick={() => addLocalStorage(item)}>
                                         <td>{item.new_value}</td>
                                         <td>{item.old_value}</td>
                                         <td>{item.field}</td>
