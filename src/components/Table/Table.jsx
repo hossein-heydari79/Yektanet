@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import styles from './Table.module.css'
+import firstData from '../../assets/data/data.json'
+import { setData } from '../../redux/Data/data.action.js'
 
 export const Table = () => {
 
+    const dispatch = useDispatch()
     const data = useSelector(state => state.dataReducer)
     const inputsValue = useSelector(state => state.inputsValueReducer)
     const prev = useRef()
@@ -12,21 +15,34 @@ export const Table = () => {
     const [page, setPage] = useState([0, 9])
 
 
+    useEffect(() => {
+
+        let newData = firstData.filter((item, index) => {
+            if (item.name.startsWith(inputsValue.nameChanger) && item.date.startsWith(inputsValue.date) && item.title.startsWith(inputsValue.ads) && item.field.startsWith(inputsValue.field)) {
+                return item
+            }
+        })
+
+        dispatch(setData(newData))
+
+    }, [inputsValue])
+
 
     useEffect(() => {
-        if (page[0] == 0) {
+        if (page[0] <= 0) {
             prev.current.disabled = true
         }
         else {
             prev.current.disabled = false
         }
-        if (page[1] == 100_000) {
+
+        if (page[1] >= data.length - 1) {
             next.current.disabled = true
         }
         else {
             next.current.disabled = false
         }
-    }, [page])
+    }, [page, data])
 
 
     return (
@@ -53,7 +69,7 @@ export const Table = () => {
                                         <td>{item.old_value}</td>
                                         <td>{item.field}</td>
                                         <td>{item.title}</td>
-                                        <td className={styles.date}>{item.date}</td>
+                                        <td className={styles.date}>{item.date.toString()}</td>
                                         <td>{item.name}</td>
                                     </tr>
                                 )
