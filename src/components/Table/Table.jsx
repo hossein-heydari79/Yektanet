@@ -17,33 +17,6 @@ export const Table = () => {
     const [page, setPage] = useState([0, 9])
 
 
-    useEffect(() => {
-
-        let newData = firstData.filter((item, index) => {
-            if (item.name.startsWith(inputsValue.nameChanger) && item.date.startsWith(inputsValue.date) && item.title.startsWith(inputsValue.ads) && item.field.startsWith(inputsValue.field)) {
-                return item
-            }
-        })
-
-        let storage = Object.entries(localStorage);
-
-        storage.forEach((item) => {
-            data.forEach((user) => {
-                if (JSON.stringify(user) == item[1]) {
-                    let newData = [...data];
-                    let newUser = user;
-                    newUser.star = true;
-                    newData.splice(JSON.parse(item[0]), 1, newUser);
-
-                    dispatch(setData(newData))
-                }
-            })
-        })
-
-        dispatch(setData(newData))
-
-    }, [inputsValue])
-
 
     useEffect(() => {
         if (page[0] <= 0) {
@@ -62,6 +35,37 @@ export const Table = () => {
 
 
     }, [page, data])
+
+    useEffect(() => {
+
+        let newData = firstData.filter((item, index) => {
+            if (item.name.startsWith(inputsValue.nameChanger) && item.date.startsWith(inputsValue.date) && item.title.startsWith(inputsValue.ads) && item.field.startsWith(inputsValue.field)) {
+                return item
+            }
+        })
+
+        dispatch(setData(newData))
+
+    }, [inputsValue])
+
+
+
+    useEffect(() => {
+        let storage = Object.entries(localStorage);
+
+        storage.forEach((item) => {
+            data.forEach((user) => {
+                if (JSON.stringify(user) == item[1]) {
+                    let newData = [...data];
+                    let newUser = user;
+                    newUser.star = true;
+                    newData.splice(JSON.parse(item[0]), 1, newUser);
+                }
+            })
+        })
+    }, [])
+
+
 
 
 
