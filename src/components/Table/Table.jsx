@@ -4,12 +4,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import styles from './Table.module.css'
 import firstData from '../../assets/data/data.json'
 import { setData } from '../../redux/Data/data.action.js'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { FaStar } from "react-icons/fa";
 import { FaAngleUp } from "react-icons/fa";
 import { FaAngleDown } from "react-icons/fa";
 import { addInputsValue } from '../../redux/InputsValue/inputsValue.action'
-
+import { addQuery, addLocalStorage } from "../../assets/js/main.js"
 
 
 
@@ -26,33 +26,6 @@ export const Table = () => {
     const location = useLocation()
     const [page, setPage] = useState([0, 9])
     const history = useHistory()
-
-
-    const addQuery = (key, value) => {
-        if (value != "") {
-            let pathname = "/";
-            let searchParams = new URLSearchParams(location.search);
-            searchParams.set(key, value);
-            history.push({
-                pathname: pathname,
-                search: searchParams.toString()
-            });
-        }
-        else {
-            removeQuery(key)
-        }
-    };
-
-
-    const removeQuery = (key) => {
-        let pathname = '/';
-        let searchParams = new URLSearchParams(location.search);
-        searchParams.delete(key);
-        history.push({
-            pathname: pathname,
-            search: searchParams.toString()
-        });
-    };
 
 
 
@@ -75,9 +48,7 @@ export const Table = () => {
     }, [page, data])
 
     useEffect(() => {
-
-
-        if (inputsValue.sort == "newest") {
+        if (inputsValue.sort === "newest") {
             let newData = firstData.filter((item, index) => {
                 if (item.name.startsWith(inputsValue.nameChanger) && item.date.startsWith(inputsValue.date) && item.title.startsWith(inputsValue.ads) && item.field.startsWith(inputsValue.field)) {
                     return item
@@ -99,61 +70,9 @@ export const Table = () => {
             dispatch(setData(newData))
         }
 
-
-
-
-
     }, [inputsValue])
 
-
-
-
-
-
     useEffect(() => {
-        let storage = Object.entries(localStorage);
-
-        storage.forEach((item) => {
-            data.forEach((user) => {
-                if (JSON.stringify(user) == item[1]) {
-                    let newData = [...data];
-                    let newUser = user;
-                    newUser.star = true;
-                    newData.splice(JSON.parse(item[0]), 1, newUser);
-                }
-            })
-        })
-    }, [])
-
-
-
-    function addLocalStorage(user, index) {
-        localStorage.setItem(user.id, JSON.stringify(user));
-        toast.success('User Added to local storage!', {
-            position: "bottom-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-
-        let newData = [...data];
-        let newUser = user;
-        newUser.star = true;
-
-        newData.splice(index, 1, newUser);
-
-        dispatch(setData(newData))
-
-    }
-
-
-
-    useEffect(() => {
-
-
 
         if (count % 2 == 0) {
             dispatch(addInputsValue({ ...inputsValue, sort: "oldest" }))
@@ -162,11 +81,12 @@ export const Table = () => {
             dispatch(addInputsValue({ ...inputsValue, sort: "newest" }))
         }
 
-
-
     }, [count])
 
+
     useEffect(() => {
+
+
         let searchParams = new URLSearchParams(location.search);
         if (searchParams.get("sort")) {
             let newSort = searchParams.get("sort").toString();
@@ -179,11 +99,21 @@ export const Table = () => {
                 setCount(1)
             }
         }
-    }, [])
 
+        let storage = Object.entries(localStorage);
 
-    useEffect(() => {
-        let searchParams = new URLSearchParams(location.search);
+        storage.forEach((item) => {
+            data.forEach((user) => {
+                if (JSON.stringify(user) == item[1]) {
+                    let newData = [...data];
+                    let newUser = user;
+                    newUser.star = true;
+                    newData.splice(JSON.parse(item[0]), 1, newUser);
+                }
+            })
+        })
+
+        searchParams = new URLSearchParams(location.search);
 
         let newInputsValue = { ...inputsValue }
 
@@ -219,6 +149,8 @@ export const Table = () => {
         dispatch(addInputsValue(newInputsValue))
     }, [])
 
+
+
     return (
         <div className={styles.table_section}>
             <table>
@@ -229,7 +161,7 @@ export const Table = () => {
                         <th>مقدار قدیمی</th>
                         <th>فیلد</th>
                         <th>نام آگهی</th>
-                        <th onClick={(e) => { setCount(count + 1); addQuery("sort", inputsValue.sort) }}>
+                        <th onClick={(e) => { setCount(count + 1); addQuery("sort", inputsValue.sort, location, history) }}>
                             تاریخ
                             {inputsValue.sort == "newest" ? <FaAngleDown /> : < FaAngleUp />}
                         </th>
@@ -243,7 +175,7 @@ export const Table = () => {
                         data.map((item, index) => {
                             if (index <= page[1] && index >= page[0]) {
                                 return (
-                                    <tr key={item.id} onClick={(e) => addLocalStorage(item, index)}>
+                                    <tr key={item.id} onClick={(e) => addLocalStorage(item, index, data, dispatch, setData)}>
                                         <td >{item.new_value}</td>
                                         <td>{item.old_value}</td>
                                         <td>{item.field}</td>
