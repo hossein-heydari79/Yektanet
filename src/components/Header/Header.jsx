@@ -39,43 +39,45 @@ export const Header = () => {
     };
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        let searchParams = new URLSearchParams(location.search);
+    //     let searchParams = new URLSearchParams(location.search);
 
-        let newInputsValue = {}
+    //     let newInputsValue = {
+    //         sort: "newest",
+    //     }
 
-        if (searchParams.get("field")) {
-            newInputsValue.field = searchParams.get("field").toString();
-        }
-        else {
-            newInputsValue.field = ""
-        }
+    //     if (searchParams.get("field")) {
+    //         newInputsValue.field = searchParams.get("field").toString();
+    //     }
+    //     else {
+    //         newInputsValue.field = ""
+    //     }
 
-        if (searchParams.get("ads")) {
-            newInputsValue.ads = searchParams.get("ads").toString();
-        }
-        else {
-            newInputsValue.ads = ""
-        }
+    //     if (searchParams.get("ads")) {
+    //         newInputsValue.ads = searchParams.get("ads").toString();
+    //     }
+    //     else {
+    //         newInputsValue.ads = ""
+    //     }
 
-        if (searchParams.get("date")) {
-            newInputsValue.date = searchParams.get("date").toString();
-        }
-        else {
-            newInputsValue.date = ""
-        }
+    //     if (searchParams.get("date")) {
+    //         newInputsValue.date = searchParams.get("date").toString();
+    //     }
+    //     else {
+    //         newInputsValue.date = ""
+    //     }
 
-        if (searchParams.get("nameChanger")) {
-            newInputsValue.nameChanger = searchParams.get("nameChanger").toString();
-        }
-        else {
-            newInputsValue.nameChanger = ""
-        }
+    //     if (searchParams.get("nameChanger")) {
+    //         newInputsValue.nameChanger = searchParams.get("nameChanger").toString();
+    //     }
+    //     else {
+    //         newInputsValue.nameChanger = ""
+    //     }
 
-        dispatch(addInputsValue(newInputsValue))
+    //     dispatch(addInputsValue(newInputsValue))
 
-    }, [])
+    // }, [])
 
 
     return (

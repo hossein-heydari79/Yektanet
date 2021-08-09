@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './Table.module.css'
 import firstData from '../../assets/data/data.json'
@@ -22,18 +23,38 @@ export const Table = () => {
     const inputsValue = useSelector(state => state.inputsValueReducer)
     const prev = useRef()
     const next = useRef()
-
+    const location = useLocation()
     const [page, setPage] = useState([0, 9])
+    const history = useHistory()
 
 
-    useEffect(() => {
-        if (count % 2 == 0) {
-            dispatch(addInputsValue({ ...inputsValue, sort: "newest" }))
+    const addQuery = (key, value) => {
+        if (value != "") {
+            let pathname = "/";
+            let searchParams = new URLSearchParams(location.search);
+            searchParams.set(key, value);
+            history.push({
+                pathname: pathname,
+                search: searchParams.toString()
+            });
         }
         else {
-            dispatch(addInputsValue({ ...inputsValue, sort: "oldest" }))
+            removeQuery(key)
         }
-    }, [count])
+    };
+
+
+    const removeQuery = (key) => {
+        let pathname = '/';
+        let searchParams = new URLSearchParams(location.search);
+        searchParams.delete(key);
+        history.push({
+            pathname: pathname,
+            search: searchParams.toString()
+        });
+    };
+
+
 
     useEffect(() => {
         if (page[0] <= 0) {
@@ -54,6 +75,7 @@ export const Table = () => {
     }, [page, data])
 
     useEffect(() => {
+
 
         if (inputsValue.sort == "newest") {
             let newData = firstData.filter((item, index) => {
@@ -79,7 +101,11 @@ export const Table = () => {
 
 
 
+
+
     }, [inputsValue])
+
+
 
 
 
@@ -123,6 +149,76 @@ export const Table = () => {
 
     }
 
+
+
+    useEffect(() => {
+
+
+
+        if (count % 2 == 0) {
+            dispatch(addInputsValue({ ...inputsValue, sort: "oldest" }))
+        }
+        else {
+            dispatch(addInputsValue({ ...inputsValue, sort: "newest" }))
+        }
+
+
+
+    }, [count])
+
+    useEffect(() => {
+        let searchParams = new URLSearchParams(location.search);
+        if (searchParams.get("sort")) {
+            let newSort = searchParams.get("sort").toString();
+            if (newSort == "newest") {
+                dispatch(addInputsValue({ ...inputsValue, sort: "newest" }))
+                setCount(2)
+            }
+            else {
+                dispatch(addInputsValue({ ...inputsValue, sort: "oldest" }))
+                setCount(1)
+            }
+        }
+    }, [])
+
+
+    useEffect(() => {
+        let searchParams = new URLSearchParams(location.search);
+
+        let newInputsValue = { ...inputsValue }
+
+        if (searchParams.get("field")) {
+            newInputsValue.field = searchParams.get("field").toString();
+        }
+        else {
+            newInputsValue.field = ""
+        }
+
+        if (searchParams.get("ads")) {
+            newInputsValue.ads = searchParams.get("ads").toString();
+        }
+        else {
+            newInputsValue.ads = ""
+        }
+
+        if (searchParams.get("date")) {
+            newInputsValue.date = searchParams.get("date").toString();
+        }
+        else {
+            newInputsValue.date = ""
+        }
+
+        if (searchParams.get("nameChanger")) {
+            newInputsValue.nameChanger = searchParams.get("nameChanger").toString();
+        }
+        else {
+            newInputsValue.nameChanger = ""
+        }
+
+
+        dispatch(addInputsValue(newInputsValue))
+    }, [])
+
     return (
         <div className={styles.table_section}>
             <table>
@@ -133,7 +229,7 @@ export const Table = () => {
                         <th>مقدار قدیمی</th>
                         <th>فیلد</th>
                         <th>نام آگهی</th>
-                        <th onClick={() => setCount(count + 1)}>
+                        <th onClick={(e) => { setCount(count + 1); addQuery("sort", inputsValue.sort) }}>
                             تاریخ
                             {inputsValue.sort == "newest" ? <FaAngleDown /> : < FaAngleUp />}
                         </th>
